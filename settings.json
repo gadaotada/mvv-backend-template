@@ -1,0 +1,46 @@
+{
+    "logging": {
+        "enabled": true,
+        "appLevel": {
+            "enabled": true
+        },
+        "databaseLevel": {
+            "enabled": false,
+            "table": "app_logs",
+            "schema": "/path-to-schema"
+        },
+        "fileLevel": {
+            "enabled": false,
+            "dir": "/",
+            "prefix": "app-logs"
+        },
+        "externalLevel": {
+            "enabled": false,
+            "endPoint": "https://some-domain.com/"
+        }
+    },
+    "auth": {
+        "sessionStorage": {
+            "strategies": {
+                "memory" : {
+                    "enabled": true,
+                    "sessionDuration": "1h",
+                    "maxSizeInBytes": 1000000000 // 1GB
+                },
+                "database" : {
+                    "enabled": false,
+                    "useDbCache": false,
+                    "cacheDuration": "1h",
+                    "cacheSizeInBytes": 1000000000 // 1GB
+                }
+            },
+            "tokenExpiration": "24h",
+            "tokenLength": 32,
+            "tokenAlgorithm": "HS256",
+            "tokenSecret": "your-secret-key"
+        },
+        "services-auth" : {
+            // TODO: Implement services-auth
+        }
+    }
+}
