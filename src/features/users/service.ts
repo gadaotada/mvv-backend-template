@@ -1,5 +1,6 @@
 import { pool } from "../../global/database/db.config";
-import { DTO } from "../../global/systems/DTO/main";
+import { DTO } from "../../global/systems/DTO";
+import { LoggingSystem } from "../../global/systems/logging";
 
 type User = {
     id: number;
@@ -32,8 +33,12 @@ export async function getUsers() {
 };
 
 export async function createUser(user: User) {
+    const logger = LoggingSystem.getInstance();
     const connection = await pool.getConnection();
+    
     try {
+        logger.log(`Creating new user: ${user.username}`, "info");
+
         const query = `
             INSERT INTO users (username, email, password) VALUES (?, ?, ?);
         `
@@ -49,11 +54,12 @@ export async function createUser(user: User) {
             return null;
         }
 
+        logger.log(`Successfully created user: ${user.username}`, "info");
         return result.metadata?.insertId;
     } finally {
         connection.release();
     }
-};
+}
 
 export async function deleteUser(id: User["id"]) {
     const connection = await pool.getConnection();

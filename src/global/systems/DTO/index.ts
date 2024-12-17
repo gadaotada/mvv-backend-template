@@ -1,9 +1,10 @@
 import { QueryResult, RowDataPacket } from "mysql2/promise";
+import { LoggingSystem } from '../logging';
 
 export class DTO<T extends QueryResult = RowDataPacket[]> {
-    private readonly options: DTO.DTOOptions<T>;
+    private readonly options: Omit<DTO.DTOOptions<T>, 'loggingSystem'>;
 
-    constructor(options: DTO.DTOOptions<T>) {
+    constructor(options: Omit<DTO.DTOOptions<T>, 'loggingSystem'>) {
         this.options = options;
     }
 
@@ -26,7 +27,7 @@ export class DTO<T extends QueryResult = RowDataPacket[]> {
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             
-            this.options.loggingSystem?.log(
+            LoggingSystem.getInstance().log(
                 `Error executing query: ${errorMessage}`,
                 'error',
                 this.options.connection

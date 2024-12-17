@@ -1,5 +1,5 @@
 import { Connection, PoolConnection, QueryOptions } from "mysql2/promise";
-import { LoggingSystem } from "../logging/main";
+import { LoggingSystem } from "../logging";
 
 declare global {
     namespace DTO {

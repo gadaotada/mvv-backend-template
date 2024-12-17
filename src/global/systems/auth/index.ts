@@ -10,6 +10,10 @@ export class AuthSystem {
         this.sessionStore = this.initializeSessionStore();
     }
 
+    getSessionStore(): AuthModule.SessionStore {
+        return this.sessionStore;
+    }
+
     private initializeSessionStore(): AuthModule.SessionStore {
         const { memory, database } = this.config.sessionStorage.strategies;
 
