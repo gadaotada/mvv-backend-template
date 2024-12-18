@@ -60,7 +60,12 @@ export class LoggingSystem {
                     break;
                 case "fileLevel":
                     if ('dir' in config && 'prefix' in config) {
-                        this.fileLogger = new FileLevelLogger(config.dir, config.prefix, config.maxFileSize, config.maxFiles);
+                        this.fileLogger = new FileLevelLogger(
+                            config.dir, 
+                            config.prefix,
+                            config.maxFileSize,
+                            config.maxFiles
+                        );
                     }
                     break;
                 case "externalLevel":
@@ -81,7 +86,10 @@ export class LoggingSystem {
                 this.dbLogger = undefined;
                 break;
             case 'fileLevel':
-                this.fileLogger = undefined;
+                if (this.fileLogger) {
+                    this.fileLogger.destroy(); // Clean up file streams
+                    this.fileLogger = undefined;
+                }
                 break;
             case 'externalLevel':
                 this.externalLogger = undefined;
@@ -92,20 +100,23 @@ export class LoggingSystem {
     private disableAllLoggers() {
         this.appLogger = undefined;
         this.dbLogger = undefined;
-        this.fileLogger = undefined;
+        if (this.fileLogger) {
+            this.fileLogger.destroy();
+            this.fileLogger = undefined;
+        }
         this.externalLogger = undefined;
     }
 
-    log(message: string, type: Logging.LogType, connection?: PoolConnection | Connection): void {
-        this.appLogger?.log(message, type);
-        this.fileLogger?.log(message);
+    log<T = unknown>(data: T, type: Logging.LogType = 'info', connection?: PoolConnection | Connection): void {
+        this.appLogger?.log(data, type);
+        this.fileLogger?.log(data);
         
         // Database and external loggers can optionally use async but fire-and-forget for now :)
         if (this.dbLogger && connection) {
-            this.dbLogger.log(message, connection).catch(() => {});
+            this.dbLogger.log(data, connection).catch(() => {});
         }
         if (this.externalLogger) {
-            this.externalLogger.log(message).catch(() => {});
+            this.externalLogger.log(data).catch(() => {});
         }
     }
 }
