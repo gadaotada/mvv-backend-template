@@ -60,7 +60,7 @@ export class LoggingSystem {
                     break;
                 case "fileLevel":
                     if ('dir' in config && 'prefix' in config) {
-                        this.fileLogger = new FileLevelLogger(config.dir, config.prefix);
+                        this.fileLogger = new FileLevelLogger(config.dir, config.prefix, config.maxFileSize, config.maxFiles);
                     }
                     break;
                 case "externalLevel":

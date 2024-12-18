@@ -4,7 +4,7 @@ import { MemorySessionStore } from "./memory-store";
 export class AuthSystem {
     private sessionStore: AuthModule.SessionStore;
     private config: AuthModule.AuthConfig;
-
+    
     constructor(config: AuthModule.AuthConfig) {
         this.config = config;
         this.sessionStore = this.initializeSessionStore();
@@ -18,14 +18,14 @@ export class AuthSystem {
         const { memory, database } = this.config.sessionStorage.strategies;
 
         if (memory.enabled) {
-            return new MemorySessionStore(memory.maxSizeInBytes);
+            return new MemorySessionStore(memory.maxSessionSize);
         }
 
         if (database.enabled) {
             return new DatabaseSessionStore(
                 database.useDbCache,
                 database.cacheDuration,
-                database.cacheSizeInBytes
+                database.cacheSizeMax
             );
         }
 

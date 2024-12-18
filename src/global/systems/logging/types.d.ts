@@ -18,6 +18,8 @@ declare global {
                 enabled: boolean;
                 dir: string;
                 prefix: string;
+                maxFileSize: number;
+                maxFiles: number;
             };
             externalLevel?: {
                 enabled: boolean;
@@ -26,15 +28,7 @@ declare global {
         }
 
         interface ILogger {
-            log(message: string, level: LogLevel, connection: PoolConnection | Connection): Promise<void>;
-        }
-
-        interface LogEntry {
-            id: bigint;
-            message: string;
-            timestamp: Date;
-            level: LogLevel;
-            metadata?: Record<string, unknown>;
+            log<T = unknown>(data: T, level: LogLevel, connection?: PoolConnection | Connection): Promise<void>;
         }
 
         interface LoggingConfig {

@@ -10,9 +10,11 @@
             "schema": "/path-to-schema"
         },
         "fileLevel": {
-            "enabled": false,
-            "dir": "/",
-            "prefix": "app-logs"
+           "enabled": false,
+            "dir": "/var/logs",
+            "prefix": "app-logs",
+            "maxFileSize": 10485760,  // 10MB in bytes (10 * 1024 * 1024)
+            "maxFiles": 7            // Keep last 7 files
         },
         "externalLevel": {
             "enabled": false,
@@ -24,20 +26,87 @@
             "strategies": {
                 "memory" : {
                     "enabled": true,
-                    "sessionDuration": "1h",
-                    "maxSizeInBytes": 1000000000 // 1GB
+                    // Assuming ~280 bytes per session:
+                    // maxSessionSize: ~3,571 sessions sessions ≈ 280KB memory heap
+                    // maxSessionSize: ~35,714 sessions ≈ 2.8MB memory heap
+                    // maxSessionSize: ~357,142 sessions ≈ 28MB memory heap
+                    // maxSessionSize: ~3.57M sessions ≈ 280MB memory heap
+                    "maxSessionSize": 3570
                 },
                 "database" : {
                     "enabled": false,
                     "useDbCache": false,
                     "cacheDuration": "1h",
-                    "cacheSizeInBytes": 1000000000 // 1GB
+                    // Assuming ~280 bytes per session:
+                    // cacheSizeMax: ~3,571 sessions sessions ≈ 280KB memory heap
+                    // cacheSizeMax: ~35,714 sessions ≈ 2.8MB memory heap
+                    // cacheSizeMax: ~357,142 sessions ≈ 28MB memory heap
+                    // cacheSizeMax: ~3.57M sessions ≈ 280MB memory heap
+                    "cacheSizeMax": 3570
                 }
             },
             "tokenExpiration": "24h",
             "tokenLength": 32,
             "tokenAlgorithm": "HS256",
-            "tokenSecret": "your-secret-key"
+            "tokenSecret": "your-secret-key",
+            "rbac": {
+                "enabled": false,
+                "roles": {
+                    "super_admin": {
+                        "permissions": ["*"],
+                        "description": "Has access to everything"
+                    },
+                    "admin": {
+                        "permissions": [
+                            "users:create:any",
+                            "users:read:any",
+                            "users:update:any",
+                            "users:delete:any",
+                            "posts:create:any",
+                            "posts:read:any",
+                            "posts:update:any",
+                            "posts:delete:any",
+                            "comments:moderate:any"
+                        ],
+                        "inherits": ["moderator"],
+                        "description": "Full system access except critical operations"
+                    },
+                    "moderator": {
+                        "permissions": [
+                            "posts:read:any",
+                            "posts:update:any",
+                            "comments:create:any",
+                            "comments:read:any",
+                            "comments:update:any",
+                            "comments:delete:any"
+                        ],
+                        "inherits": ["user"],
+                        "description": "Can moderate content and manage comments"
+                    },
+                    "user": {
+                        "permissions": [
+                            "posts:read:any",
+                            "posts:create:own",
+                            "posts:update:own",
+                            "posts:delete:own",
+                            "comments:create:own",
+                            "comments:read:any",
+                            "comments:update:own",
+                            "comments:delete:own",
+                            "profile:read:own",
+                            "profile:update:own"
+                        ],
+                        "description": "Standard user permissions"
+                    },
+                    "guest": {
+                        "permissions": [
+                            "posts:read:any",
+                            "comments:read:any"
+                        ],
+                        "description": "Public access permissions"
+                    }
+                }
+            }
         },
         "services-auth" : {
             // TODO: Implement services-auth

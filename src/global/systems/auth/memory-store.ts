@@ -3,8 +3,8 @@ export class MemorySessionStore implements AuthModule.SessionStore {
     private currentSize: number = 0;
     private maxSize: number;
 
-    constructor(maxSizeInBytes: number) {
-        this.maxSize = maxSizeInBytes;
+    constructor(maxSessionSize: number) {
+        this.maxSize = maxSessionSize;
     }
 
     set(sessionId: string, data: AuthModule.SessionData): void {

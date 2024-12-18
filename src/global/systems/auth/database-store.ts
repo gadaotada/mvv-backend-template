@@ -10,12 +10,12 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
     constructor(
         private useCache: boolean,
         private cacheDuration: string,
-        maxCacheSize: number
+        cacheSizeMax: number
     ) {
         if (useCache) {
             this.cache = new Map();
             this.validUntil = new Date(Date.now() + this.parseDuration(cacheDuration));
-            this.maxSize = maxCacheSize;
+            this.maxSize = cacheSizeMax;
         }
     }
 
@@ -33,7 +33,9 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
     }
 
     private manageCache(sessionId: string, data: AuthModule.SessionData): void {
-        if (!this.useCache || !this.cache) return;
+        if (!this.useCache || !this.cache) {
+            return;
+        }
 
         // Check if cache expired
         if (Date.now() > this.validUntil.getTime()) {

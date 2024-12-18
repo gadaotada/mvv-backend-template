@@ -4,6 +4,7 @@ declare global {
             userId: number;
             createdAt: Date;
             expiresAt: Date;
+            roles?: string[];
         }
         
         interface SessionStore {
@@ -18,24 +19,22 @@ declare global {
                 strategies: {
                     memory: {
                         enabled: boolean;
-                        sessionDuration: string;
-                        maxSizeInBytes: number;
+                        maxSessionSize: number;
                     };
                     database: {
                         enabled: boolean;
                         useDbCache: boolean;
                         cacheDuration: string;
-                        cacheSizeInBytes: number;
+                        cacheSizeMax: number;
                     };
                 };
                 tokenExpiration: string;
                 tokenLength: number;
                 tokenAlgorithm: "HS256" | "RS256" | "ES256";
                 tokenSecret: string;
+                rbac: RBACConfig;
             };
         }
-
-        type Permission = string;  // e.g., "users:read", "posts:write"
         
         interface Role {
             name: string;
@@ -44,19 +43,13 @@ declare global {
         }
 
         interface RBACConfig {
-            roles: Record<string, Role>;
-            hierarchy?: boolean;  // Enable role inheritance
-            cacheEnabled?: boolean;
-            cacheDuration?: string;
-        }
-
-        interface RBACProvider {
-            hasPermission(userId: number, permission: Permission): Promise<boolean>;
-            hasRole(userId: number, role: string): Promise<boolean>;
-            getUserRoles(userId: number): Promise<string[]>;
-            getUserPermissions(userId: number): Promise<Permission[]>;
-            assignRole(userId: number, role: string): Promise<void>;
-            removeRole(userId: number, role: string): Promise<void>;
+            enabled: boolean;
+            roles: {
+                [key: string]: {
+                    permissions?: string[];
+                    inherits?: string[];
+                };
+            };
         }
     }
 }

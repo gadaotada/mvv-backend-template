@@ -1,17 +1,13 @@
 import axios from "axios";
 
 export class ExternalLevelLogger {
-    private endPoint: string;
+    constructor(private endPoint: string) {}
 
-    constructor(endPoint: string) {
-        this.endPoint = endPoint;
-    }
-
-    async log(message: string): Promise<void> {
+    async log<T = unknown>(data: T): Promise<void> {
         try {
-            await axios.post(this.endPoint, { message, timestamp: new Date() });
+            await axios.post(this.endPoint, data);
         } catch (error) {
-            console.error(`Failed to log message to external endpoint: ${error}`);
+            console.error(`Failed to log to external endpoint:`, error);
         }
     }
 }

@@ -1,17 +1,17 @@
 export class AppLevelLogger {
-    log(message: string, type: Logging.LogType): void {
+    log<T = unknown>(data: T, type: Logging.LogType): void {
         const prefix = `[AppLevel]:`;
+        const logData = JSON.stringify(data, null, 2);
 
         switch (type) {
             case "error":
-                console.error(`${prefix} ${message}`);
+                console.error(`${prefix}`, logData);
                 break;
             case "warning":
-                console.warn(`${prefix} ${message}`);
+                console.warn(`${prefix}`, logData);
                 break;
             default:
-                console.log(`${prefix} ${message}`);
-                break;
+                console.log(`${prefix}`, logData);
         }
     }
 }
