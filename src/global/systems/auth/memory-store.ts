@@ -17,7 +17,7 @@ export class MemorySessionStore implements AuthModule.SessionStore {
             
             // If still not enough space, clean the oldest session
             if (this.currentSize + sessionSize > this.maxSize) {
-                this.sessions.delete(this.sessions.keys().next().value);
+                this.sessions.delete(this.sessions.keys().next().value as string);
             }
         }
 

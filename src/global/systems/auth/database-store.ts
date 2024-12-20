@@ -48,7 +48,7 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
 
         // If adding would exceed max size, remove oldest entries
         while (this.currentCacheSize + sessionSize > this.maxSize && this.cache.size > 0) {
-            const oldestKey = this.cache.keys().next().value;
+            const oldestKey = this.cache.keys().next().value as string;
             const oldestSize = JSON.stringify(this.cache.get(oldestKey)).length;
             this.cache.delete(oldestKey);
             this.currentCacheSize -= oldestSize;

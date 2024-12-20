@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "node dist/main.js",
+    "email:preview": "email dev -d src/global/systems/mail/templates",
     "build": "tsc",
     "dev": "nodemon --watch src --exec ts-node src/main.ts"
   },
@@ -14,14 +15,21 @@
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.2",
+    "@types/nodemailer": "^6.4.17",
+    "@types/react": "^19.0.2",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "@react-email/components": "^0.0.31",
     "axios": "^1.7.9",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.11.5"
+    "mysql2": "^3.11.5",
+    "nodemailer": "^6.9.16",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-email": "^3.0.4"
   }
 }
