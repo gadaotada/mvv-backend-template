@@ -1,13 +1,7 @@
 import { pool } from "../../global/database/db.config";
 import { DTO } from "../../global/systems/DTO";
 import { LoggingSystem } from "../../global/systems/logging";
-
-type User = {
-    id: number;
-    username: string;
-    email: string;
-    password: string;
-}
+import { User } from "./types";
 
 export async function getUsers() { 
     const connection = await pool.getConnection();

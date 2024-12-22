@@ -2,14 +2,17 @@ import settings from './settings.json';
 import { TestEmail } from './global/systems/mail/templates';
 import { MailSystem } from './global/systems/mail';
 
-const mail = new MailSystem(settings.mail);
+const mail = MailSystem.getInstance(settings.mail);
 
 async function TestSignleMail() {
-    await mail.sendTemplate(TestEmail, { name: 'Niki' }, {
-        to: 'n.kosev@2good.tech',
-        subject: 'Test Email First',
+    const mailProps = {
+        to: 'n.kosev@2goodprojects.eu',
+        subject: 'Test Email',
         from: settings.mail.defaultFrom,
-    });
+        Template: TestEmail,
+        templateProps: { name: 'Niki' },
+    }
+    await mail.sendMail(mailProps);
 }
 
 const bulkOptions = [
@@ -71,3 +74,6 @@ const bulkOptions = [
 } */
 
 TestSignleMail();
+
+// During app initialization
+MailSystem.getInstance(settings.mail);

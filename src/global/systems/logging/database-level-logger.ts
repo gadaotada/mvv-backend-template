@@ -1,6 +1,14 @@
 import { Connection, PoolConnection } from "mysql2/promise";
 
+/**
+* Logger for database-level messages
+* @class DatabaseLevelLogger
+*/
 export class DatabaseLevelLogger {
+    /**
+    * @param table - The name of the table to log to
+    * @private tableChecked - Whether the table has been checked for existence
+    */
     private table: string;
     private tableChecked: boolean = false;
 
@@ -8,6 +16,10 @@ export class DatabaseLevelLogger {
         this.table = table;
     }
 
+    /**
+    * Ensure the table exists
+    * @param connection - The database connection
+    */
     async ensureTableExists(connection: PoolConnection | Connection): Promise<void> {
         if (this.tableChecked) {
             return;
@@ -28,6 +40,11 @@ export class DatabaseLevelLogger {
         }
     }
 
+    /**
+    * Log a message to the database
+    * @param data - The data to log
+    * @param connection - The database connection
+    */
     async log<T = unknown>(data: T, connection: PoolConnection | Connection): Promise<void> {
         try {
             await this.ensureTableExists(connection);

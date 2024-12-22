@@ -1,7 +1,17 @@
 import { createWriteStream, statSync, renameSync, existsSync, unlinkSync } from "fs";
 import { join } from "path";
 
+/**
+* Logger for file-level messages
+* @class FileLevelLogger
+*/
 export class FileLevelLogger {
+    /**
+    * @param dir - The directory to log to
+    * @param prefix - The prefix for the log file
+    * @param maxFileSize - The maximum file size before rotation (default 10MB)
+    * @param maxFiles - The maximum number of log files to keep (default 7)
+    */
     private dir: string;
     private prefix: string;
     private currentFile: string;
@@ -22,6 +32,10 @@ export class FileLevelLogger {
         this.currentFile = this.getCurrentFilePath();
     }
 
+    /**
+    * Get the current file path
+    * @returns {string} The current file path
+    */
     private getCurrentFilePath(): string {
         return join(
             this.dir,
@@ -29,10 +43,18 @@ export class FileLevelLogger {
         );
     }
 
+    /**
+    * Get the rotated file path
+    * @param index - The index of the rotated file
+    * @returns {string} The rotated file path
+    */
     private getRotatedFilePath(index: number): string {
         return `${this.currentFile}.${index}`;
     }
 
+    /**
+    * Rotate the log files
+    */
     private async rotateFiles(): Promise<void> {
         if (this.stream) {
             this.stream.end();
@@ -64,6 +86,9 @@ export class FileLevelLogger {
         }
     }
 
+    /**
+    * Check if the log file needs to be rotated
+    */
     private checkRotation(): void {
         try {
             if (!existsSync(this.currentFile)) {
@@ -79,6 +104,10 @@ export class FileLevelLogger {
         }
     }
 
+    /**
+    * Get the write stream for the current log file
+    * @returns {ReturnType<typeof createWriteStream>} The write stream
+    */
     private getStream(): ReturnType<typeof createWriteStream> {
         if (!this.stream) {
             this.stream = createWriteStream(this.currentFile, { flags: "a" });
@@ -92,6 +121,10 @@ export class FileLevelLogger {
         return this.stream;
     }
 
+    /**
+    * Log a message to the file
+    * @param data - The data to log
+    */
     log<T = unknown>(data: T): void {
         try {
             this.checkRotation();
@@ -117,6 +150,9 @@ export class FileLevelLogger {
         }
     }
 
+    /**
+    * Destroy the logger
+    */
     destroy(): void {
         if (this.stream) {
             this.stream.end();

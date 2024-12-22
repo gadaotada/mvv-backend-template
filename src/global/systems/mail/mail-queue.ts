@@ -1,6 +1,16 @@
 import { EventEmitter } from 'events';
 
+/**
+* Mail queue for handling email sending
+* @class MailQueue
+* @extends {EventEmitter}
+*/
 export class MailQueue extends EventEmitter {
+    /**
+    * @private queue - The map of queued emails
+    * @private processing - Whether the queue is currently processing
+    * @private activeJobs - The number of active jobs in the queue
+    */
     private queue: Map<string, MailModule.QueuedMail> = new Map();
     private processing: boolean = false;
     private activeJobs: number = 0;
@@ -9,6 +19,11 @@ export class MailQueue extends EventEmitter {
         super();
     }
 
+    /**
+    * Add an email to the queue
+    * @param mail - The email to add
+    * @returns {Promise<string>} The ID of the queued email
+    */
     async add(mail: MailModule.MailOptions): Promise<string> {
         const id = crypto.randomUUID();
         
@@ -26,6 +41,11 @@ export class MailQueue extends EventEmitter {
         return id;
     }
 
+    /**
+    * Add multiple emails to the queue
+    * @param mails - The emails to add
+    * @returns {Promise<string[]>} The IDs of the queued emails
+    */
     async addBulk(mails: MailModule.MailOptions[]): Promise<string[]> {
         const ids = mails.map(mail => {
             const id = crypto.randomUUID();
@@ -45,6 +65,9 @@ export class MailQueue extends EventEmitter {
         return ids;
     }
 
+    /**
+    * Process the queue of emails
+    */
     private async processQueue() {
         if (this.processing) {
             return;
@@ -94,10 +117,18 @@ export class MailQueue extends EventEmitter {
         }
     }
 
+    /**
+    * Get the status of a queued email
+    * @param id - The ID of the queued email
+    * @returns {MailModule.QueuedMail | undefined} The status of the queued email or undefined if not found
+    */
     getStatus(id: string): MailModule.QueuedMail | undefined {
         return this.queue.get(id);
     }
 
+    /**
+    * Clear the queue of emails
+    */
     clear(): void {
         this.queue.clear();
         this.emit('queue:cleared');

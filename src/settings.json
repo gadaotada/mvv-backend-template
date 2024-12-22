@@ -128,5 +128,8 @@
             "retryDelay": 3000,
             "maxConcurrent": 10
         }
+    },
+    "crons": {
+        "enabled": true
     }
 }

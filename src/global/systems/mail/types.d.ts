@@ -25,7 +25,9 @@ declare global {
             to: string | string[];
             from?: string;
             subject: string;
-            html: string;
+            html?: string;
+            Template?: React.FC;
+            templateProps?: any;
             text?: string;
             attachments?: Array<{
                 filename: string;

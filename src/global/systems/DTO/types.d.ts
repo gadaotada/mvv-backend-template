@@ -21,3 +21,5 @@ declare global {
         }
     }
 }
+
+export {};

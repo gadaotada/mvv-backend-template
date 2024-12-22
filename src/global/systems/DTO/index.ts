@@ -1,13 +1,25 @@
 import { QueryResult, RowDataPacket } from "mysql2/promise";
 import { LoggingSystem } from '../logging';
 
+/**
+* Data Transfer Object (DTO) class for database operations
+* @class DTO
+* @template T - The type of the query result
+*/
 export class DTO<T extends QueryResult = RowDataPacket[]> {
+    /**
+    * @param options - The options for the DTO
+    */
     private readonly options: Omit<DTO.DTOOptions<T>, 'loggingSystem'>;
 
     constructor(options: Omit<DTO.DTOOptions<T>, 'loggingSystem'>) {
         this.options = options;
     }
 
+    /**
+    * Execute the query
+    * @returns {Promise<DTO.QueryExecutionResult<T>>} The result of the query
+    */
     async execute(): Promise<DTO.QueryExecutionResult<T>> {
         try {
             const [result] = await this.options.connection.execute<T>(

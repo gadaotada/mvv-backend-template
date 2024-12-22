@@ -1,7 +1,18 @@
 import { pool } from "../../database/db.config";
 import { DTO } from "../DTO";
 
+/**
+* Database session store for authentication
+* @class DatabaseSessionStore
+* @implements {AuthModule.SessionStore}
+*/
 export class DatabaseSessionStore implements AuthModule.SessionStore {
+    /**
+    * @private cache - The cache of sessions
+    * @private validUntil - The expiration date of the cache
+    * @private currentCacheSize - The current size of the cache
+    * @private maxSize - The maximum size of the cache
+    */
     private cache?: Map<string, AuthModule.SessionData>;
     private validUntil!: Date;
     private currentCacheSize: number = 0;
@@ -19,6 +30,11 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
         }
     }
 
+    /**
+    * Parse a duration string into milliseconds
+    * @param duration - The duration string
+    * @returns {number} The duration in milliseconds
+    */
     private parseDuration(duration: string): number {
         const unit = duration.slice(-1);
         const value = parseInt(duration.slice(0, -1));
@@ -32,6 +48,11 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
         }
     }
 
+    /**
+    * Manage the cache of sessions
+    * @param sessionId - The ID of the session
+    * @param data - The session data
+    */
     private manageCache(sessionId: string, data: AuthModule.SessionData): void {
         if (!this.useCache || !this.cache) {
             return;
@@ -58,6 +79,11 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
         this.currentCacheSize += sessionSize;
     }
 
+    /**
+    * Set a session in the database
+    * @param sessionId - The ID of the session
+    * @param data - The session data
+    */
     async set(sessionId: string, data: AuthModule.SessionData): Promise<void> {
         const connection = await pool.getConnection();
         try {
@@ -85,6 +111,11 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
         }
     }
 
+    /**
+    * Get a session from the database
+    * @param sessionId - The ID of the session
+    * @returns {AuthModule.SessionData | null} The session data or null if not found
+    */
     async get(sessionId: string): Promise<AuthModule.SessionData | null> {
         // Check cache first if enabled
         if (this.useCache && this.cache?.has(sessionId)) {
@@ -125,6 +156,10 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
         }
     }
 
+    /**
+    * Delete a session from the database
+    * @param sessionId - The ID of the session
+    */
     async delete(sessionId: string): Promise<void> {
         if (this.useCache) {
             this.cache?.delete(sessionId);
@@ -144,6 +179,11 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
         }
     }
 
+    /**
+    * Check if a session is valid
+    * @param sessionId - The ID of the session
+    * @returns {boolean} Whether the session is valid
+    */
     async isValid(sessionId: string): Promise<boolean> {
         const session = await this.get(sessionId);
         return session !== null;
