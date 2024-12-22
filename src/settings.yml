@@ -1,0 +1,106 @@
+logging:
+  enabled: ${LOG_ENABLED:-true}
+  appLevel:
+    enabled: ${LOG_APP_ENABLED:-true}
+  databaseLevel:
+    enabled: ${LOG_DB_ENABLED:-false}
+    table: ${LOG_DB_TABLE:-app_logs}
+    schema: ${LOG_DB_SCHEMA:-/path-to-schema}
+  fileLevel:
+    enabled: ${LOG_FILE_ENABLED:-false}
+    dir: ${LOG_FILE_DIR:-/var/logs}
+    prefix: ${LOG_FILE_PREFIX:-app-logs}
+    maxFileSize: ${LOG_FILE_MAX_SIZE:-10485760}  # 10MB
+    maxFiles: ${LOG_FILE_MAX_FILES:-7}
+  externalLevel:
+    enabled: ${LOG_EXTERNAL_ENABLED:-false}
+    endPoint: ${LOG_EXTERNAL_ENDPOINT:-https://some-domain.com/}
+
+auth:
+  sessionStorage:
+    strategies:
+      # Assuming ~380 bytes per session:
+        # cacheSizeMax and maxSessionSize: 2_630 ≈ 1MB memory heap
+        # cacheSizeMax and maxSessionSize: 26_300 ≈ 10MB memory heap
+        # cacheSizeMax and maxSessionSize: 263_000 ≈ 100MB memory heap
+        # cacheSizeMax and maxSessionSize: 2_630_000 ≈ 1GB memory heap
+      memory:
+        enabled: ${AUTH_MEMORY_ENABLED:-true}
+        maxSessionSize: ${AUTH_MEMORY_MAX_SESSIONS:-2630}
+      database:
+        enabled: ${AUTH_DB_ENABLED:-false}
+        useDbCache: ${AUTH_DB_USE_CACHE:-false}
+        cacheDuration: ${AUTH_DB_CACHE_DURATION:-1h}
+        cacheSizeMax: ${AUTH_DB_CACHE_SIZE:-2630}
+    tokenExpiration: ${AUTH_TOKEN_EXPIRATION:-24h}
+    tokenLength: ${AUTH_TOKEN_LENGTH:-32}
+    tokenAlgorithm: ${AUTH_TOKEN_ALGO:-HS256}
+    tokenSecret: ${AUTH_TOKEN_SECRET:-your-secret-key}
+    rbac:
+      enabled: false
+      roles:
+        super_admin:
+          permissions: ["*"]
+          description: "Has access to everything"
+        
+        admin:
+          permissions:
+            - "users:create:any"
+            - "users:read:any"
+            - "users:update:any"
+            - "users:delete:any"
+            - "posts:create:any"
+            - "posts:read:any"
+            - "posts:update:any"
+            - "posts:delete:any"
+            - "comments:moderate:any"
+          inherits: ["moderator"]
+          description: "Full system access except critical operations"
+        
+        moderator:
+          permissions:
+            - "posts:read:any"
+            - "posts:update:any"
+            - "comments:create:any"
+            - "comments:read:any"
+            - "comments:update:any"
+            - "comments:delete:any"
+          inherits: ["user"]
+          description: "Can moderate content and manage comments"
+        
+        user:
+          permissions:
+            - "posts:read:any"
+            - "posts:create:own"
+            - "posts:update:own"
+            - "posts:delete:own"
+            - "comments:create:own"
+            - "comments:read:any"
+            - "comments:update:own"
+            - "comments:delete:own"
+            - "profile:read:own"
+            - "profile:update:own"
+          description: "Standard user permissions"
+        
+        guest:
+          permissions:
+            - "posts:read:any"
+            - "comments:read:any"
+          description: "Public access permissions"
+
+mail:
+  smtp:
+    host: ${SMTP_HOST:-smtp.example.com}
+    port: ${SMTP_PORT:-587}
+    secure: ${SMTP_SECURE:-false}
+    auth:
+      user: ${SMTP_USER}
+      pass: ${SMTP_PASS}
+  defaultFrom: ${MAIL_FROM:-noreply@example.com}
+  queueSettings:
+    maxRetries: ${MAIL_MAX_RETRIES:-3}
+    retryDelay: ${MAIL_RETRY_DELAY:-3000}
+    maxConcurrent: ${MAIL_MAX_CONCURRENT:-10}
+
+crons:
+  enabled: ${CRON_ENABLED:-true} 

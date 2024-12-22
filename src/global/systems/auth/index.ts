@@ -2,8 +2,9 @@ import { DatabaseSessionStore } from "./database-store";
 import { MemorySessionStore } from "./memory-store";
 
 /**
-* System for handling authentication functionality
+* Internal system for handling authentication storage strategies
 * @class AuthSystem
+* @internal
 */
 export class AuthSystem {
     /**
@@ -21,6 +22,7 @@ export class AuthSystem {
     /**
     * Get the session store
     * @returns {AuthModule.SessionStore} The session store
+    * @internal
     */
     getSessionStore(): AuthModule.SessionStore {
         return this.sessionStore;
@@ -29,6 +31,7 @@ export class AuthSystem {
     /**
     * Initialize the session store
     * @returns {AuthModule.SessionStore} The session store
+    * @private
     */
     private initializeSessionStore(): AuthModule.SessionStore {
         const { memory, database } = this.config.sessionStorage.strategies;
@@ -47,6 +50,4 @@ export class AuthSystem {
 
         throw new Error("No session storage strategy enabled");
     }
-
-    // Auth methods coming soon...
 }

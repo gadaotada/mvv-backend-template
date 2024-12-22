@@ -13,8 +13,8 @@
            "enabled": false,
             "dir": "/var/logs",
             "prefix": "app-logs",
-            "maxFileSize": 10485760,  // 10MB in bytes (10 * 1024 * 1024)
-            "maxFiles": 7            // Keep last 7 files
+            "maxFileSize": 10485760,
+            "maxFiles": 7 
         },
         "externalLevel": {
             "enabled": false,
@@ -26,22 +26,12 @@
             "strategies": {
                 "memory" : {
                     "enabled": true,
-                    // Assuming ~380 bytes per session:
-                    // maxSessionSize: 2_630 ≈ 1MB memory heap
-                    // maxSessionSize: 26_300 ≈ 10MB memory heap
-                    // maxSessionSize: 263_000 ≈ 100MB memory heap
-                    // maxSessionSize: 2_630_000 ≈ 1GB memory heap
                     "maxSessionSize": 2630
                 },
                 "database" : {
                     "enabled": false,
                     "useDbCache": false,
                     "cacheDuration": "1h",
-                    // Assuming ~380 bytes per session:
-                    // cacheSizeMax: 2_630 ≈ 1MB memory heap
-                    // cacheSizeMax: 26_300 ≈ 10MB memory heap
-                    // cacheSizeMax: 263_000 ≈ 100MB memory heap
-                    // cacheSizeMax: 2_630_000 ≈ 1GB memory heap
                     "cacheSizeMax": 2630
                 }
             },

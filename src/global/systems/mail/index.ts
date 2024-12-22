@@ -21,11 +21,40 @@ export class MailSystem {
     private queue!: MailQueue;
     private config!: MailModule.MailConfig;
 
-    private constructor(config: MailModule.MailConfig) {
+    constructor(config: MailModule.MailConfig) {
+        this.updateConfig(config);
+    }
+
+    /**
+    * Update mail system configuration at runtime
+    * @param config - New mail configuration
+    */
+    public updateConfig(config: MailModule.MailConfig): void {
         this.config = config;
+        
+        // Close existing transporter if it exists
+        if (this.transporter) {
+            this.transporter.close();
+        }
+
+        // Create new transporter with updated config
         this.transporter = nodemailer.createTransport(config.smtp);
+        
+        // Update or create new queue with new settings
+        if (this.queue) {
+            this.queue.clear();
+        }
         this.queue = new MailQueue(config.queueSettings);
+        
         this.setupQueueListeners();
+    }
+
+    /**
+    * Get current mail configuration
+    * @returns {MailModule.MailConfig} Current configuration
+    */
+    public getConfig(): MailModule.MailConfig {
+        return { ...this.config };
     }
 
     /**
