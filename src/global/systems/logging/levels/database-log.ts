@@ -2,9 +2,9 @@ import { Connection, PoolConnection } from "mysql2/promise";
 
 /**
 * Logger for database-level messages
-* @class DatabaseLevelLogger
+* @class DatabaseLogger
 */
-export class DatabaseLevelLogger {
+export class DatabaseLogger {
     /**
     * @param table - The name of the table to log to
     * @private tableChecked - Whether the table has been checked for existence

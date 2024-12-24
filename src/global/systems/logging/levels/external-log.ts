@@ -2,9 +2,9 @@ import axios from "axios";
 
 /**
 * Logger for external-level messages
-* @class ExternalLevelLogger
+* @class ExternalLogger
 */
-export class ExternalLevelLogger {
+export class ExternalLogger {
     /**
     * @param endPoint - The endpoint to log to
     */

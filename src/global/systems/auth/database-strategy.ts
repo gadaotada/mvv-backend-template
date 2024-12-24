@@ -90,14 +90,15 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
             const dto = new DTO({
                 connection,
                 query: `
-                    INSERT INTO sessions (session_id, user_id, created_at, expires_at)
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO sessions (session_id, user_id, created_at, expires_at, token)
+                    VALUES (?, ?, ?, ?, ?, ?)
                     ON DUPLICATE KEY UPDATE 
                     user_id = VALUES(user_id),
                     created_at = VALUES(created_at),
-                    expires_at = VALUES(expires_at)
+                    expires_at = VALUES(expires_at),
+                    token = VALUES(token)
                 `,
-                values: [sessionId, data.userId, data.createdAt, data.expiresAt]
+                values: [sessionId, data.userId, data.createdAt, data.expiresAt, data.token]
             });
 
             const result = await dto.execute();
@@ -143,7 +144,8 @@ export class DatabaseSessionStore implements AuthModule.SessionStore {
             const session: AuthModule.SessionData = {
                 userId: result.data[0].user_id,
                 createdAt: new Date(result.data[0].created_at),
-                expiresAt: new Date(result.data[0].expires_at)
+                expiresAt: new Date(result.data[0].expires_at),
+                token: result.data[0].token
             };
 
             if (this.useCache) {

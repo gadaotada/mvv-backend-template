@@ -1,7 +1,7 @@
-import { AppLevelLogger } from "./app-level-logger";
-import { DatabaseLevelLogger } from "./database-level-logger";
-import { FileLevelLogger } from "./file-level-logger";
-import { ExternalLevelLogger } from "./external-level-logger";
+import { AppLogger } from "./levels/app-log";
+import { DatabaseLogger } from "./levels/database-log";
+import { FileLogger } from "./levels/file-log";
+import { ExternalLogger } from "./levels/external-log";
 import { Connection, PoolConnection } from "mysql2/promise";
 
 /**
@@ -19,10 +19,10 @@ export class LoggingSystem {
         * @private externalLogger - Logger for external-level messages
     */
     private static instance: LoggingSystem;
-    private appLogger?: AppLevelLogger;
-    private dbLogger?: DatabaseLevelLogger;
-    private fileLogger?: FileLevelLogger;
-    private externalLogger?: ExternalLevelLogger;
+    private appLogger?: AppLogger;
+    private dbLogger?: DatabaseLogger;
+    private fileLogger?: FileLogger;
+    private externalLogger?: ExternalLogger;
 
     constructor(settings: Logging.LoggingConfigSettings) {
         if (LoggingSystem.instance) {
@@ -72,16 +72,16 @@ export class LoggingSystem {
 
             switch (key) {
                 case "appLevel":
-                    this.appLogger = new AppLevelLogger();
+                    this.appLogger = new AppLogger();
                     break;
                 case "databaseLevel":
                     if ('table' in config) {
-                        this.dbLogger = new DatabaseLevelLogger(config.table);
+                        this.dbLogger = new DatabaseLogger(config.table);
                     }
                     break;
                 case "fileLevel":
                     if ('dir' in config && 'prefix' in config) {
-                        this.fileLogger = new FileLevelLogger(
+                        this.fileLogger = new FileLogger(
                             config.dir, 
                             config.prefix,
                             config.maxFileSize,
@@ -91,7 +91,7 @@ export class LoggingSystem {
                     break;
                 case "externalLevel":
                     if ('endPoint' in config) {
-                        this.externalLogger = new ExternalLevelLogger(config.endPoint);
+                        this.externalLogger = new ExternalLogger(config.endPoint);
                     }
                     break;
             }
@@ -141,7 +141,7 @@ export class LoggingSystem {
     * @param type - The type of log (info, error, warning, debug)
     * @param connection - Optional connection object for database logger
     */
-    log<T = unknown>(data: T, type: Logging.LogType = 'info', connection?: PoolConnection | Connection): void {
+    log<T = unknown>(data: T, type: Logging.LogLevel = 'info', connection?: PoolConnection | Connection): void {
         this.appLogger?.log(data, type);
         this.fileLogger?.log(data);
         

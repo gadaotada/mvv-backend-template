@@ -18,6 +18,7 @@ logging:
 
 auth:
   sessionStorage:
+    currentStrategy: ${AUTH_CURRENT_STRATEGY:-memory} # memory, database
     strategies:
       # Assuming ~380 bytes per session:
         # cacheSizeMax and maxSessionSize: 2_630 ≈ 1MB memory heap
@@ -25,16 +26,14 @@ auth:
         # cacheSizeMax and maxSessionSize: 263_000 ≈ 100MB memory heap
         # cacheSizeMax and maxSessionSize: 2_630_000 ≈ 1GB memory heap
       memory:
-        enabled: ${AUTH_MEMORY_ENABLED:-true}
         maxSessionSize: ${AUTH_MEMORY_MAX_SESSIONS:-2630}
       database:
-        enabled: ${AUTH_DB_ENABLED:-false}
         useDbCache: ${AUTH_DB_USE_CACHE:-false}
         cacheDuration: ${AUTH_DB_CACHE_DURATION:-1h}
         cacheSizeMax: ${AUTH_DB_CACHE_SIZE:-2630}
     tokenExpiration: ${AUTH_TOKEN_EXPIRATION:-24h}
     tokenLength: ${AUTH_TOKEN_LENGTH:-32}
-    tokenAlgorithm: ${AUTH_TOKEN_ALGO:-HS256}
+    tokenAlgorithm: ${AUTH_TOKEN_ALGO:-HS256} # HS256, HS384, HS512
     tokenSecret: ${AUTH_TOKEN_SECRET:-your-secret-key}
     rbac:
       enabled: false

@@ -3,9 +3,9 @@ import { join } from "path";
 
 /**
 * Logger for file-level messages
-* @class FileLevelLogger
+* @class FileLogger
 */
-export class FileLevelLogger {
+export class FileLogger {
     /**
     * @param dir - The directory to log to
     * @param prefix - The prefix for the log file

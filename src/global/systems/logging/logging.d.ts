@@ -2,7 +2,6 @@ import type { Connection, PoolConnection } from "mysql2/promise";
 
 declare global {
     namespace Logging {
-        type LogType = 'info' | 'warning' | 'error' | 'debug';
         type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
         interface LoggingConfigSettings {
